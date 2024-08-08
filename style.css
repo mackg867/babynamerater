@@ -58,6 +58,7 @@ button {
   border-radius: 8px;
   cursor: pointer;
   margin-right: 10px;
+  margin-bottom: 10px; /* Add margin to create space between buttons */
 }
 
 button:hover {
@@ -67,6 +68,12 @@ button:hover {
 #ranking-container {
   margin-top: 20px;
   text-align: center;
+}
+
+#ranking-container button {
+  width: 100%;
+  max-width: 300px;
+  margin: 10px 0; /* Ensure each button is on its own row with spacing */
 }
 
 #results {
