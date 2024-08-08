@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Max Diff Baby Names</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Baby Name Rater!</h1>
+    </header>
+    <main>
+        <section id="toggle-container">
+            <label for="name-type-toggle">Vote on:</label>
+            <select id="name-type-toggle">
+                <option value="girls">Girls' Names</option>
+                <option value="boys">Boys' Names</option>
+            </select>
+        </section>
+        <section id="names-container">
+            <div class="name-button-pair">
+                <div id="name1" class="name"></div>
+                <button id="choose-name1">I prefer this name</button>
+            </div>
+            <div class="name-button-pair">
+                <div id="name2" class="name"></div>
+                <button id="choose-name2">I prefer this name</button>
+            </div>
+        </section>
+        <section id="ranking-container">
+            <button id="calculate-ranking">Calculate Ranking</button>
+            <button id="save-results">Save Results</button>
+            <button id="upload-results">Upload Previous Results</button>
+            <input type="file" id="file-input" style="display: none;" />
+            <div id="results">
+                <div id="girls-results" class="results-column">
+                    <h2>Girls' Names</h2>
+                    <ul id="girls-results-list"></ul>
+                </div>
+                <div id="boys-results" class="results-column">
+                    <h2>Boys' Names</h2>
+                    <ul id="boys-results-list"></ul>
+                </div>
+            </div>
+            <p id="error-message" style="color: red; display: none;"></p>
+        </section>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
