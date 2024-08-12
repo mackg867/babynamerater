@@ -11,16 +11,88 @@ body {
 
 header {
   margin-bottom: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: #333;
 }
 
 main {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  max-width: 800px;
 }
 
 #toggle-container {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+#toggle-container label {
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+
+/* Styling for the gender selection buttons */
+#gender-buttons-container {
+  margin-top: 10px;
+}
+
+#gender-buttons-container button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.3s;
+}
+
+#gender-buttons-container button:hover {
+  background-color: #0056b3;
+}
+
+#gender-buttons-container button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Styling for the Start Over button */
+#start-over-container {
+  margin-top: 20px;
+  text-align: center;
+}
+
+#start-over-button {
+  padding: 10px 30px;
+  font-size: 1.2rem;
+  background-color: #dc3545; /* Red color to differentiate it */
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#start-over-button:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+#round-info-container {
   margin-bottom: 20px;
+  text-align: center;
+}
+
+#round-info {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #007bff;
 }
 
 #names-container {
@@ -47,6 +119,7 @@ main {
   width: 100%;
   text-align: center;
   margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 button {
@@ -57,49 +130,144 @@ button {
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  margin-right: 10px;
-  margin-bottom: 10px; /* Add margin to create space between buttons */
+  margin-bottom: 10px;
+  transition: background-color 0.3s;
 }
 
 button:hover {
   background-color: #0056b3;
 }
 
-#ranking-container {
-  margin-top: 20px;
-  text-align: center;
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
-#ranking-container button {
-  width: 100%;
-  max-width: 300px;
-  margin: 10px 0; /* Ensure each button is on its own row with spacing */
-}
-
-#results {
-  display: flex;
-  justify-content: space-around;
+#top-pick-display {
   width: 100%;
   max-width: 800px;
   margin-top: 20px;
+  text-align: center;
+  background-color: #e6f7ff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.results-column {
-  flex: 1;
-  margin: 0 10px;
+#top-pick-container h2 {
+  font-size: 1.8rem;
+  color: #007bff;
+  margin-bottom: 10px;
 }
 
-#girls-results-list, #boys-results-list {
+#top-pick-name {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Styling for the Runner Up Names section */
+#runner-up-container {
+  margin-top: 20px;
+}
+
+#runner-up-container h3 {
+  font-size: 1.5rem;
+  color: #007bff;
+  margin-bottom: 10px;
+}
+
+#runner-up-names-list {
   list-style-type: none;
   padding: 0;
+  text-align: center;
 }
 
-#girls-results-list li, #boys-results-list li {
+#runner-up-names-list li {
   background-color: #ffffff;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 10px;
   margin: 5px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#tournament-progress {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.round-results {
+  flex: 1;
+  margin: 0 10px;
+}
+
+.round-results h2 {
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.round-results ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.round-results li {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 5px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#all-rounds-results {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 20px;
+}
+
+#all-rounds-results h2 {
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#previous-rounds-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.round-summary {
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #e6e6e6;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.round-summary h3 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+.round-summary ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.round-summary li {
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 5px 0;
+  text-align: center;
 }
