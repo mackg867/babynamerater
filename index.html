@@ -3,48 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Max Diff Baby Names</title>
+    <title>Baby Name Tournament</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Baby Name Rater!</h1>
+        <h1>Baby Name Tournament!</h1>
     </header>
     <main>
+        <!-- Gender Selection Buttons -->
         <section id="toggle-container">
-            <label for="name-type-toggle">Vote on:</label>
-            <select id="name-type-toggle">
-                <option value="girls">Girls' Names</option>
-                <option value="boys">Boys' Names</option>
-            </select>
+            <label for="name-type-toggle">Choose The Gender Of The Names:</label>
+            <div id="gender-buttons-container">
+                <button id="boys-names-button">Boys Names</button>
+                <button id="girls-names-button">Girls Names</button>
+            </div>
         </section>
+
+        <!-- Start Over Button -->
+        <section id="start-over-container">
+            <button id="start-over-button">Start Over</button>
+        </section>
+
+        <!-- Current Round Info -->
+        <section id="round-info-container">
+            <div id="round-info">Round 1</div>
+        </section>
+
+        <!-- Name Pair Comparison -->
         <section id="names-container">
             <div class="name-button-pair">
                 <div id="name1" class="name"></div>
-                <button id="choose-name1">I prefer this name</button>
+                <button id="choose-name1" disabled>I prefer this name</button>
             </div>
             <div class="name-button-pair">
                 <div id="name2" class="name"></div>
-                <button id="choose-name2">I prefer this name</button>
+                <button id="choose-name2" disabled>I prefer this name</button>
             </div>
         </section>
-        <section id="ranking-container">
-            <button id="calculate-ranking">Calculate Ranking</button>
-            <button id="save-results">Save Results</button>
-            <button id="upload-results">Upload Previous Results</button>
-            <input type="file" id="file-input" style="display: none;" />
-            <div id="results">
-                <div id="girls-results" class="results-column">
-                    <h2>Girls' Names</h2>
-                    <ul id="girls-results-list"></ul>
-                </div>
-                <div id="boys-results" class="results-column">
-                    <h2>Boys' Names</h2>
-                    <ul id="boys-results-list"></ul>
-                </div>
+
+        <!-- Current Round Winners -->
+        <section id="tournament-progress">
+            <div class="round-results">
+                <h2>Current Round Winners</h2>
+                <ul id="current-round-winners-list"></ul>
             </div>
-            <p id="error-message" style="color: red; display: none;"></p>
         </section>
+
+        <!-- Top Pick Display (Hidden Initially) -->
+        <section id="top-pick-display" style="display: none;">
+            <div id="top-pick-container">
+                <h2>Favorite Name</h2>
+                <div id="top-pick-name"></div>
+            </div>
+            <div id="runner-up-container">
+                <h3>Runner Up Names</h3>
+                <ul id="runner-up-names-list"></ul>
+            </div>
+        </section>
+
+        <!-- All Rounds Results -->
+        <section id="all-rounds-results">
+            <h2>Previous Rounds</h2>
+            <div id="previous-rounds-container"></div>
+        </section>
+
     </main>
     <script src="script.js"></script>
 </body>
