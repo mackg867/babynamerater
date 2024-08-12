@@ -1,160 +1,236 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const girlsNames = ["Emma", "Olivia", "Ava", "Isabella", "Sophia", "Mia", "Charlotte", "Amelia", "Evelyn", "Abigail"];
-    const boysNames = ["Liam", "Noah", "Oliver", "Elijah", "William", "James", "Benjamin", "Lucas", "Henry", "Alexander"];
-    let currentNameType = 'girls';
-    let scores = {
-        girls: {},
-        boys: {}
-    };
-    girlsNames.forEach(name => scores.girls[name] = 0);
-    boysNames.forEach(name => scores.boys[name] = 0);
+    const girlsNames = ["Luma", "Fern", "Aurora", "Olive", "Iris", "Aurelia", "Eros", "Astraea", "Aster", "Sage", "Willow", "Meadow", "Lotus", "Everest"];
+    const boysNames = ["Kai", "Axel", "Dax", "Gideon", "Lief", "Ianthe", "Cyrus", "Rowan", "Wren", "Eos", "Aster", "Sage", "Alder", "Astor", "Orion", "Forrest", "Cedar", "Cypress", "Gabe(Gabriel)", "Everest", "Edison", "Everett", "Kelvin", "Nero"];
 
+    let currentTournament; // No tournament is selected by default
+
+    // Get references to the elements
+    const boysNamesButton = document.getElementById('boys-names-button');
+    const girlsNamesButton = document.getElementById('girls-names-button');
+    const startOverButton = document.getElementById('start-over-button');
     const name1Div = document.getElementById('name1');
     const name2Div = document.getElementById('name2');
     const chooseName1Btn = document.getElementById('choose-name1');
     const chooseName2Btn = document.getElementById('choose-name2');
-    const calculateRankingBtn = document.getElementById('calculate-ranking');
-    const saveResultsBtn = document.getElementById('save-results');
-    const uploadResultsBtn = document.getElementById('upload-results');
-    const fileInput = document.getElementById('file-input');
-    const errorMessage = document.getElementById('error-message');
-    const nameTypeToggle = document.getElementById('name-type-toggle');
-    const girlsResultsList = document.getElementById('girls-results-list');
-    const boysResultsList = document.getElementById('boys-results-list');
+    const roundInfoDiv = document.getElementById('round-info');
+    const currentRoundWinnersList = document.getElementById('current-round-winners-list');
+    const previousRoundsContainer = document.getElementById('previous-rounds-container');
+    const topPickDisplaySection = document.getElementById('top-pick-display');
+    let topPickNameDiv = document.getElementById('top-pick-name');
+    const runnerUpNamesList = document.getElementById('runner-up-names-list');
 
-    function getRandomPair() {
-        const names = currentNameType === 'girls' ? girlsNames : boysNames;
-        let index1 = Math.floor(Math.random() * names.length);
-        let index2;
-        do {
-            index2 = Math.floor(Math.random() * names.length);
-        } while (index1 === index2);
-        return [names[index1], names[index2]];
+    // Disable the "I Prefer This Name" buttons initially
+    disableRatingButtons();
+
+    // Initialize the state for a tournament
+    function initializeState(names) {
+        return {
+            names: names,
+            currentRound: 1,
+            mainBracket: initializeTournament(names),
+            roundType: 'main',
+            winners: [],
+            currentPairIndex: 0,
+            previousRounds: [], // Store all previous rounds
+            finished: false,
+            topPick: null, // Store the top pick when the tournament ends
+            previousRoundWinners: [] // Store the winners from the round before the final
+        };
+    }
+
+    function initializeTournament(names) {
+        const shuffledNames = names.sort(() => Math.random() - 0.5);
+
+        let bracket = [];
+        for (let i = 0; i < shuffledNames.length; i += 2) {
+            if (i + 1 < shuffledNames.length) {
+                bracket.push([shuffledNames[i], shuffledNames[i + 1]]);
+            } else {
+                bracket.push([shuffledNames[i], shuffledNames[i]]); // Pair with itself to avoid undefined
+            }
+        }
+
+        return bracket;
+    }
+
+    // Event listeners for gender selection buttons
+    boysNamesButton.addEventListener('click', () => {
+        startTournament('boys');
+    });
+
+    girlsNamesButton.addEventListener('click', () => {
+        startTournament('girls');
+    });
+
+    function startTournament(gender) {
+        // Initialize the tournament based on gender selection
+        if (gender === 'boys') {
+            currentTournament = initializeState(boysNames);
+            boysNamesButton.disabled = true;
+            girlsNamesButton.disabled = true;
+        } else if (gender === 'girls') {
+            currentTournament = initializeState(girlsNames);
+            boysNamesButton.disabled = true;
+            girlsNamesButton.disabled = true;
+        }
+
+        // Enable the "I Prefer This Name" buttons
+        enableRatingButtons();
+
+        // Display the first pair of names
+        displayNames();
+        displayRoundInfo();
     }
 
     function displayNames() {
-        const [name1, name2] = getRandomPair();
-        name1Div.textContent = name1;
-        name2Div.textContent = name2;
-    }
-
-    function updateScores(preferredName) {
-        scores[currentNameType][preferredName]++;
-        displayNames();
-    }
-
-    function displayResults() {
-        girlsResultsList.innerHTML = '';
-        boysResultsList.innerHTML = '';
-
-        const sortedGirlsNames = Object.keys(scores.girls).sort((a, b) => scores.girls[b] - scores.girls[a]);
-        sortedGirlsNames.forEach(name => {
-            const li = document.createElement('li');
-            li.textContent = `${name}: ${scores.girls[name]}`;
-            girlsResultsList.appendChild(li);
-        });
-
-        const sortedBoysNames = Object.keys(scores.boys).sort((a, b) => scores.boys[b] - scores.boys[a]);
-        sortedBoysNames.forEach(name => {
-            const li = document.createElement('li');
-            li.textContent = `${name}: ${scores.boys[name]}`;
-            boysResultsList.appendChild(li);
-        });
-    }
-
-    function saveResults() {
-        let csvContent = "data:text/csv;charset=utf-8,Type,Name,Score\n";
-
-        const sortedGirlsNames = Object.keys(scores.girls).sort((a, b) => scores.girls[b] - scores.girls[a]);
-        sortedGirlsNames.forEach(name => {
-            csvContent += `girls,${name},${scores.girls[name]}\n`;
-        });
-
-        const sortedBoysNames = Object.keys(scores.boys).sort((a, b) => scores.boys[b] - scores.boys[a]);
-        sortedBoysNames.forEach(name => {
-            csvContent += `boys,${name},${scores.boys[name]}\n`;
-        });
-
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement('a');
-        link.setAttribute('href', encodedUri);
-        link.setAttribute('download', 'baby_name_ratings.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    function validateCSV(content) {
-        const rows = content.split('\n');
-        if (rows.length < 2) return false;
-
-        const headers = rows[0].split(',');
-        if (headers[0].trim() !== 'Type' || headers[1].trim() !== 'Name' || headers[2].trim() !== 'Score') return false;
-
-        for (let i = 1; i < rows.length; i++) {
-            if (rows[i].trim() === '') continue;
-            const cols = rows[i].split(',');
-            if (cols.length !== 3) return false;
-            const type = cols[0].trim();
-            const name = cols[1].trim();
-            const score = parseInt(cols[2].trim(), 10);
-            if (!['girls', 'boys'].includes(type) || (type === 'girls' && !girlsNames.includes(name)) || (type === 'boys' && !boysNames.includes(name)) || isNaN(score)) return false;
+        if (currentTournament.finished) {
+            displayTopPick();
+            disableRatingButtons();
+            return;
         }
-        return true;
+
+        const currentPair = getCurrentPair();
+        name1Div.textContent = currentPair[0];
+        name2Div.textContent = currentPair[1] || '';
+        chooseName2Btn.style.display = currentPair[1] ? 'block' : 'none';
     }
 
-    function handleFileUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+    function getCurrentPair() {
+        return currentTournament.mainBracket[currentTournament.currentPairIndex];
+    }
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const content = e.target.result;
-            if (!validateCSV(content)) {
-                errorMessage.textContent = "Invalid CSV format. Please ensure the file has 'Type,Name,Score' headers and valid data.";
-                errorMessage.style.display = 'block';
+    function displayRoundInfo() {
+        roundInfoDiv.textContent = `Round ${currentTournament.currentRound}`;
+    }
+
+    function advanceTournament(winner, loser) {
+        currentTournament.winners.push(winner);
+
+        currentTournament.currentPairIndex++;
+
+        if (currentTournament.currentPairIndex >= currentTournament.mainBracket.length) {
+            saveCurrentRoundResults();
+            if (currentTournament.winners.length === 1) {
+                currentTournament.finished = true;
+                currentTournament.topPick = currentTournament.winners[0]; // Set the top pick
+                displayTopPick();
+                disableRatingButtons();
                 return;
+            } else {
+                // Save the winners of the current round as previousRoundWinners
+                currentTournament.previousRoundWinners = [...currentTournament.winners];
+
+                currentTournament.mainBracket = initializeTournament(currentTournament.winners);
+                currentTournament.winners = [];
+                currentTournament.currentRound++;
+                currentTournament.currentPairIndex = 0;
             }
+        }
 
-            errorMessage.style.display = 'none';
-
-            // Clear current scores
-            girlsNames.forEach(name => scores.girls[name] = 0);
-            boysNames.forEach(name => scores.boys[name] = 0);
-
-            // Update scores with new data
-            const rows = content.split('\n').slice(1);
-            rows.forEach(row => {
-                if (row.trim() === '') return;
-                const [type, name, score] = row.split(',').map(cell => cell.trim());
-                if (type && name && score) {
-                    scores[type][name] = parseInt(score, 10);
-                }
-            });
-            displayResults();
-        };
-        reader.readAsText(file);
+        displayNames();
+        displayRoundInfo();
+        displayTournamentProgress();
     }
 
-    nameTypeToggle.addEventListener('change', (event) => {
-        currentNameType = event.target.value;
-        displayNames();
+    function saveCurrentRoundResults() {
+        currentTournament.previousRounds.push({
+            round: currentTournament.currentRound,
+            winners: [...currentTournament.winners]
+        });
+        displayPreviousRounds();
+    }
+
+    function displayTournamentProgress() {
+        currentRoundWinnersList.innerHTML = '';
+
+        currentTournament.winners.forEach(name => {
+            const li = document.createElement('li');
+            li.textContent = name;
+            currentRoundWinnersList.appendChild(li);
+        });
+    }
+
+    function displayPreviousRounds() {
+        previousRoundsContainer.innerHTML = '';
+
+        currentTournament.previousRounds.forEach(round => {
+            const roundSummary = document.createElement('div');
+            roundSummary.classList.add('round-summary');
+
+            const roundTitle = document.createElement('h3');
+            roundTitle.textContent = `Round ${round.round}`;
+
+            const winnersList = document.createElement('ul');
+            round.winners.forEach(name => {
+                const li = document.createElement('li');
+                li.textContent = name;
+                winnersList.appendChild(li);
+            });
+
+            roundSummary.appendChild(roundTitle);
+            roundSummary.appendChild(document.createTextNode('Winners:'));
+            roundSummary.appendChild(winnersList);
+
+            previousRoundsContainer.appendChild(roundSummary);
+        });
+    }
+
+    function displayTopPick() {
+        topPickNameDiv = document.getElementById('top-pick-name');
+        if (topPickNameDiv && currentTournament.topPick) {
+            topPickNameDiv.textContent = currentTournament.topPick;
+            displayRunnerUpNames(); // Display runner-up names along with the top pick
+            topPickDisplaySection.style.display = 'block'; // Show the top pick section
+        }
+    }
+
+    function displayRunnerUpNames() {
+        runnerUpNamesList.innerHTML = ''; // Clear any previous content
+
+        // Calculate the round that is 2 less than the current round
+        const runnerUpRound = currentTournament.currentRound - 2;
+
+        if (runnerUpRound >= 1) {
+            const round = currentTournament.previousRounds.find(r => r.round === runnerUpRound);
+
+            if (round) {
+                // Filter out the top pick from the runner-up names
+                const runnerUpNames = round.winners.filter(name => name !== currentTournament.topPick);
+
+                // Display the runner-up names
+                runnerUpNames.forEach(name => {
+                    const li = document.createElement('li');
+                    li.textContent = name;
+                    runnerUpNamesList.appendChild(li);
+                });
+            }
+        }
+    }
+
+    function disableRatingButtons() {
+        chooseName1Btn.disabled = true;
+        chooseName2Btn.disabled = true;
+    }
+
+    function enableRatingButtons() {
+        chooseName1Btn.disabled = false;
+        chooseName2Btn.disabled = false;
+    }
+
+    // Add event listener for the Start Over button
+    startOverButton.addEventListener('click', () => {
+        location.reload(); // Reload the page when Start Over button is clicked
     });
 
     chooseName1Btn.addEventListener('click', () => {
         const selectedName = name1Div.textContent;
-        updateScores(selectedName);
+        const otherName = name2Div.textContent;
+        advanceTournament(selectedName, otherName);
     });
 
     chooseName2Btn.addEventListener('click', () => {
         const selectedName = name2Div.textContent;
-        updateScores(selectedName);
+        const otherName = name1Div.textContent;
+        advanceTournament(selectedName, otherName);
     });
-
-    calculateRankingBtn.addEventListener('click', displayResults);
-    saveResultsBtn.addEventListener('click', saveResults);
-    uploadResultsBtn.addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', handleFileUpload);
-
-    displayNames();
 });
